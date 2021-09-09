@@ -1,4 +1,4 @@
-#include<stdio.h>
+﻿#include<stdio.h>
 #include <stdlib.h>
 #include <String.h>
 #include <math.h>
@@ -20,9 +20,14 @@ int main() {
 	char* answer = NULL;
 
 	while (true) {
+		//0,3,4,5중 선택 -> 오류시 계속 무한 루프
 		if (!mode(&modeNum, 0)) { errorMsg(1); continue; }
 		else { break; }
 	}
+	/*
+	1. 0 선택시 TA 모드
+	2. 답을 직접 작성하고 볼 수 있음
+	*/
 	if (modeNum == 0) {
 		ta = 1;
 		while (true) {
@@ -31,8 +36,10 @@ int main() {
 		}
 		createSelect(&answer, modeNum);
 	}
+	// 0이 아닐시 숫자에 맞는 자릿수의 자연수 임의 생성
 	else { createRandom(&answer, modeNum); }
 	
+	//게임 스타트
 	start(answer, modeNum, ta);
 	free(answer);
 	return 0;
@@ -46,8 +53,10 @@ bool mode(int* modeNum, int option) {
 		printf("Enter number of digits in code(3,4,5): ");
 	}
 	else { printf("Enter number of digits in code(0 or 3,4,5): "); }
+	//숫자 입력
 	fgets(modeBuffer, sizeof(modeBuffer) - 1, stdin);
 	modeBuffer[strlen(modeBuffer) - 1] = '\0';
+	//0,3,4,5 인지 검토
 	if (checkModeNum(modeBuffer)) {
 		*modeNum = atoi(modeBuffer);
 		return true;
@@ -55,6 +64,11 @@ bool mode(int* modeNum, int option) {
 	else { return false; }
 }
 
+/*
+  TA 모드 일때 숫자 생성
+  3,4,5 자리 숫자중 하나 생성
+  같은 수가 다른 자리에 있거나(ex 112) 자릿수 안맞는 숫자들 검토
+*/
 void createSelect(char** answer, int digit) {
 	char answerBuffer[11] = { '\0' };
 	int length = 0;
@@ -73,6 +87,7 @@ void createSelect(char** answer, int digit) {
 	}
 }
 
+//임의 숫자 생성
 void createRandom(char** answer, int digit) {
 	int num = 0;
 
@@ -85,6 +100,10 @@ void createRandom(char** answer, int digit) {
 	}
 }
 
+/*
+  TA모드일때 답을 보여주고 아닐 시 직접 맞춤
+  숫자 입력하고 각 자릿수 및 숫자 검토
+*/
 void start(char* answer, int size, int ta) {
 	int i = 0, j = 0, bulls = 0, length = 0;
 	char guess[101];
@@ -109,6 +128,9 @@ void start(char* answer, int size, int ta) {
 	}
 }
 
+/*
+  bulls / cows 갯수 확인
+*/
 int checkBullsCows(char* answer, char* guess, int size) {
 	int i = 0, j = 0, bulls = 0, cows = 0;
 
@@ -126,6 +148,10 @@ int checkBullsCows(char* answer, char* guess, int size) {
 	return bulls;
 }
 
+/*
+  숫자 검토 함수
+  0,3,4,5 외에는 false
+*/
 bool checkModeNum(char* modeBuffer) {
 	int length = strlen(modeBuffer);
 	
@@ -137,6 +163,11 @@ bool checkModeNum(char* modeBuffer) {
 	else { return false; }
 }
 
+/*
+  직접 입력한 숫자 검토
+  3자리 자연수에 두자리 자연수가 오면 맨 앞에 0토글
+  다른 자리에 같은 숫자 검토
+*/
 bool checkSelect(char* answerBuffer, int size) {
 	int i = 0, j = 0;
 	char buf[10] = { '\0' };
@@ -152,6 +183,9 @@ bool checkSelect(char* answerBuffer, int size) {
 	return true;
 }
 
+/*
+ 임의로 만든 숫자 각 자리의 숫자 검토
+*/
 bool checkRandom(char* answer, int num, int size) {
 	int i = 0, j = 0;
 
